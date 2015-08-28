@@ -152,7 +152,6 @@ mb_application_activate (GApplication *application)
 	g_signal_connect (priv->window, "key-open",
 	                  G_CALLBACK (key_open_callback), application);
 
-	mb_library_start (priv->library);
 	mb_window_show (priv->window);
 }
 
@@ -350,22 +349,22 @@ static void
 loading_completed_callback (MbLoader *loader, MbBookBuffer *buffer,
                             MbApplication *application)
 {
-	mb_window_set_book_buffer (application->priv->window, (gpointer) buffer);
+	MbApplicationPrivate *priv;
 
+	priv = application->priv;
+	
+	mb_window_set_book_buffer (priv->window, (gpointer) buffer);
+	
 	g_object_unref (loader);
+
+	mb_library_start (priv->library);
 }
 
 static void
 loading_error_callback (MbLoader *loader, gchar *message,
                         MbApplication *application)
 {
-	MbApplicationPrivate *priv;
-	MbWindow *window;
-
-	priv = application->priv;
-	window = priv->window;
-	
-	mb_window_show_error (window, message);
+	mb_window_show_error (application->priv->window, message);
 
 	g_object_unref (loader);
 }
