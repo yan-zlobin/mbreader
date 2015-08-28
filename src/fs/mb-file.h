@@ -1,8 +1,20 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*-  */
-/*
+/* Magic Book Reader
+ * Copyright (C) 2015 Yan Zlobin <yan_zlobin@agniyoga.ru>
+ *
  * mb-file.h
- * Copyright (C) 2014 Yan Zlobin <yan_zlobin@agniyoga.ru>
- * 
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Library General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Library General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #ifndef __MB_FILE__
@@ -56,6 +68,8 @@ GType mb_file_get_type (void) G_GNUC_CONST;
 MbFile *mb_file_new (gchar *filename);
 
 guint mb_file_get_count (MbFile *file);
+
+GSList *mb_file_get_list (MbFile *file);
 
 MbBookPreview *mb_file_get_preview (MbFile *file, gchar *filename);
 
