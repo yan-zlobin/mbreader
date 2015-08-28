@@ -23,18 +23,6 @@ mbreader_SOURCES =  \
 	mb-book-view.h \
 	mb-book-view-stack.c \
 	mb-book-view-stack.h \
-	mb-epub-loader.c \
-	mb-epub-loader.h \
-	mb-fb2-loader.c \
-	mb-fb2-loader.h \
-	mb-fb2-parser.c \
-	mb-fb2-parser.h \
-	mb-fb2-parser-characters.c \
-	mb-fb2-parser-characters.h \
-	mb-fb2-parser-end-element.c \
-	mb-fb2-parser-end-element.h \
-	mb-fb2-parser-start-element.c \
-	mb-fb2-parser-start-element.h \
 	mb-loader.c \
 	mb-loader.h \
 	mb-profile.c \
@@ -58,7 +46,19 @@ mbreader_SOURCES =  \
 	library/mb-storage.h \
 	fs/mb-file.c \
 	fs/mb-file.h \
-	types/mb-types.h
+	types/mb-types.h \
+	fb2/mb-fb2-parser.c \
+	fb2/mb-fb2-parser.h \
+	fb2/mb-fb2-parser-characters.c \
+	fb2/mb-fb2-parser-characters.h \
+	fb2/mb-fb2-parser-end-element.c \
+	fb2/mb-fb2-parser-end-element.h \
+	fb2/mb-fb2-parser-start-element.c \
+	fb2/mb-fb2-parser-start-element.h \
+	epub/mb-epub-loader.c \
+	epub/mb-epub-loader.h \
+	fb2/mb-fb2-loader.c \
+	fb2/mb-fb2-loader.h
 
 mbreader_LDFLAGS = 
 

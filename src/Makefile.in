@@ -94,16 +94,16 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_mbreader_OBJECTS = mb-application.$(OBJEXT) \
 	mb-book-buffer.$(OBJEXT) mb-book-view.$(OBJEXT) \
-	mb-book-view-stack.$(OBJEXT) mb-epub-loader.$(OBJEXT) \
-	mb-fb2-loader.$(OBJEXT) mb-fb2-parser.$(OBJEXT) \
-	mb-fb2-parser-characters.$(OBJEXT) \
-	mb-fb2-parser-end-element.$(OBJEXT) \
-	mb-fb2-parser-start-element.$(OBJEXT) mb-loader.$(OBJEXT) \
+	mb-book-view-stack.$(OBJEXT) mb-loader.$(OBJEXT) \
 	mb-profile.$(OBJEXT) mbreader.$(OBJEXT) mb-window.$(OBJEXT) \
 	mb-book-preview.$(OBJEXT) mb-preview-widget.$(OBJEXT) \
 	mb-reference.$(OBJEXT) mb-file-system.$(OBJEXT) \
 	mb-zip-file.$(OBJEXT) mb-library.$(OBJEXT) \
-	mb-storage.$(OBJEXT) mb-file.$(OBJEXT)
+	mb-storage.$(OBJEXT) mb-file.$(OBJEXT) mb-fb2-parser.$(OBJEXT) \
+	mb-fb2-parser-characters.$(OBJEXT) \
+	mb-fb2-parser-end-element.$(OBJEXT) \
+	mb-fb2-parser-start-element.$(OBJEXT) mb-epub-loader.$(OBJEXT) \
+	mb-fb2-loader.$(OBJEXT)
 mbreader_OBJECTS = $(am_mbreader_OBJECTS)
 am__DEPENDENCIES_1 =
 mbreader_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -342,18 +342,6 @@ mbreader_SOURCES = \
 	mb-book-view.h \
 	mb-book-view-stack.c \
 	mb-book-view-stack.h \
-	mb-epub-loader.c \
-	mb-epub-loader.h \
-	mb-fb2-loader.c \
-	mb-fb2-loader.h \
-	mb-fb2-parser.c \
-	mb-fb2-parser.h \
-	mb-fb2-parser-characters.c \
-	mb-fb2-parser-characters.h \
-	mb-fb2-parser-end-element.c \
-	mb-fb2-parser-end-element.h \
-	mb-fb2-parser-start-element.c \
-	mb-fb2-parser-start-element.h \
 	mb-loader.c \
 	mb-loader.h \
 	mb-profile.c \
@@ -377,7 +365,19 @@ mbreader_SOURCES = \
 	library/mb-storage.h \
 	fs/mb-file.c \
 	fs/mb-file.h \
-	types/mb-types.h
+	types/mb-types.h \
+	fb2/mb-fb2-parser.c \
+	fb2/mb-fb2-parser.h \
+	fb2/mb-fb2-parser-characters.c \
+	fb2/mb-fb2-parser-characters.h \
+	fb2/mb-fb2-parser-end-element.c \
+	fb2/mb-fb2-parser-end-element.h \
+	fb2/mb-fb2-parser-start-element.c \
+	fb2/mb-fb2-parser-start-element.h \
+	epub/mb-epub-loader.c \
+	epub/mb-epub-loader.h \
+	fb2/mb-fb2-loader.c \
+	fb2/mb-fb2-loader.h
 
 mbreader_LDFLAGS = 
 mbreader_LDADD = $(MBREADER_LIBS)
@@ -616,6 +616,90 @@ mb-file.obj: fs/mb-file.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='fs/mb-file.c' object='mb-file.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mb-file.obj `if test -f 'fs/mb-file.c'; then $(CYGPATH_W) 'fs/mb-file.c'; else $(CYGPATH_W) '$(srcdir)/fs/mb-file.c'; fi`
+
+mb-fb2-parser.o: fb2/mb-fb2-parser.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mb-fb2-parser.o -MD -MP -MF $(DEPDIR)/mb-fb2-parser.Tpo -c -o mb-fb2-parser.o `test -f 'fb2/mb-fb2-parser.c' || echo '$(srcdir)/'`fb2/mb-fb2-parser.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mb-fb2-parser.Tpo $(DEPDIR)/mb-fb2-parser.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='fb2/mb-fb2-parser.c' object='mb-fb2-parser.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mb-fb2-parser.o `test -f 'fb2/mb-fb2-parser.c' || echo '$(srcdir)/'`fb2/mb-fb2-parser.c
+
+mb-fb2-parser.obj: fb2/mb-fb2-parser.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mb-fb2-parser.obj -MD -MP -MF $(DEPDIR)/mb-fb2-parser.Tpo -c -o mb-fb2-parser.obj `if test -f 'fb2/mb-fb2-parser.c'; then $(CYGPATH_W) 'fb2/mb-fb2-parser.c'; else $(CYGPATH_W) '$(srcdir)/fb2/mb-fb2-parser.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mb-fb2-parser.Tpo $(DEPDIR)/mb-fb2-parser.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='fb2/mb-fb2-parser.c' object='mb-fb2-parser.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mb-fb2-parser.obj `if test -f 'fb2/mb-fb2-parser.c'; then $(CYGPATH_W) 'fb2/mb-fb2-parser.c'; else $(CYGPATH_W) '$(srcdir)/fb2/mb-fb2-parser.c'; fi`
+
+mb-fb2-parser-characters.o: fb2/mb-fb2-parser-characters.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mb-fb2-parser-characters.o -MD -MP -MF $(DEPDIR)/mb-fb2-parser-characters.Tpo -c -o mb-fb2-parser-characters.o `test -f 'fb2/mb-fb2-parser-characters.c' || echo '$(srcdir)/'`fb2/mb-fb2-parser-characters.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mb-fb2-parser-characters.Tpo $(DEPDIR)/mb-fb2-parser-characters.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='fb2/mb-fb2-parser-characters.c' object='mb-fb2-parser-characters.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mb-fb2-parser-characters.o `test -f 'fb2/mb-fb2-parser-characters.c' || echo '$(srcdir)/'`fb2/mb-fb2-parser-characters.c
+
+mb-fb2-parser-characters.obj: fb2/mb-fb2-parser-characters.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mb-fb2-parser-characters.obj -MD -MP -MF $(DEPDIR)/mb-fb2-parser-characters.Tpo -c -o mb-fb2-parser-characters.obj `if test -f 'fb2/mb-fb2-parser-characters.c'; then $(CYGPATH_W) 'fb2/mb-fb2-parser-characters.c'; else $(CYGPATH_W) '$(srcdir)/fb2/mb-fb2-parser-characters.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mb-fb2-parser-characters.Tpo $(DEPDIR)/mb-fb2-parser-characters.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='fb2/mb-fb2-parser-characters.c' object='mb-fb2-parser-characters.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mb-fb2-parser-characters.obj `if test -f 'fb2/mb-fb2-parser-characters.c'; then $(CYGPATH_W) 'fb2/mb-fb2-parser-characters.c'; else $(CYGPATH_W) '$(srcdir)/fb2/mb-fb2-parser-characters.c'; fi`
+
+mb-fb2-parser-end-element.o: fb2/mb-fb2-parser-end-element.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mb-fb2-parser-end-element.o -MD -MP -MF $(DEPDIR)/mb-fb2-parser-end-element.Tpo -c -o mb-fb2-parser-end-element.o `test -f 'fb2/mb-fb2-parser-end-element.c' || echo '$(srcdir)/'`fb2/mb-fb2-parser-end-element.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mb-fb2-parser-end-element.Tpo $(DEPDIR)/mb-fb2-parser-end-element.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='fb2/mb-fb2-parser-end-element.c' object='mb-fb2-parser-end-element.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mb-fb2-parser-end-element.o `test -f 'fb2/mb-fb2-parser-end-element.c' || echo '$(srcdir)/'`fb2/mb-fb2-parser-end-element.c
+
+mb-fb2-parser-end-element.obj: fb2/mb-fb2-parser-end-element.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mb-fb2-parser-end-element.obj -MD -MP -MF $(DEPDIR)/mb-fb2-parser-end-element.Tpo -c -o mb-fb2-parser-end-element.obj `if test -f 'fb2/mb-fb2-parser-end-element.c'; then $(CYGPATH_W) 'fb2/mb-fb2-parser-end-element.c'; else $(CYGPATH_W) '$(srcdir)/fb2/mb-fb2-parser-end-element.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mb-fb2-parser-end-element.Tpo $(DEPDIR)/mb-fb2-parser-end-element.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='fb2/mb-fb2-parser-end-element.c' object='mb-fb2-parser-end-element.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mb-fb2-parser-end-element.obj `if test -f 'fb2/mb-fb2-parser-end-element.c'; then $(CYGPATH_W) 'fb2/mb-fb2-parser-end-element.c'; else $(CYGPATH_W) '$(srcdir)/fb2/mb-fb2-parser-end-element.c'; fi`
+
+mb-fb2-parser-start-element.o: fb2/mb-fb2-parser-start-element.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mb-fb2-parser-start-element.o -MD -MP -MF $(DEPDIR)/mb-fb2-parser-start-element.Tpo -c -o mb-fb2-parser-start-element.o `test -f 'fb2/mb-fb2-parser-start-element.c' || echo '$(srcdir)/'`fb2/mb-fb2-parser-start-element.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mb-fb2-parser-start-element.Tpo $(DEPDIR)/mb-fb2-parser-start-element.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='fb2/mb-fb2-parser-start-element.c' object='mb-fb2-parser-start-element.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mb-fb2-parser-start-element.o `test -f 'fb2/mb-fb2-parser-start-element.c' || echo '$(srcdir)/'`fb2/mb-fb2-parser-start-element.c
+
+mb-fb2-parser-start-element.obj: fb2/mb-fb2-parser-start-element.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mb-fb2-parser-start-element.obj -MD -MP -MF $(DEPDIR)/mb-fb2-parser-start-element.Tpo -c -o mb-fb2-parser-start-element.obj `if test -f 'fb2/mb-fb2-parser-start-element.c'; then $(CYGPATH_W) 'fb2/mb-fb2-parser-start-element.c'; else $(CYGPATH_W) '$(srcdir)/fb2/mb-fb2-parser-start-element.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mb-fb2-parser-start-element.Tpo $(DEPDIR)/mb-fb2-parser-start-element.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='fb2/mb-fb2-parser-start-element.c' object='mb-fb2-parser-start-element.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mb-fb2-parser-start-element.obj `if test -f 'fb2/mb-fb2-parser-start-element.c'; then $(CYGPATH_W) 'fb2/mb-fb2-parser-start-element.c'; else $(CYGPATH_W) '$(srcdir)/fb2/mb-fb2-parser-start-element.c'; fi`
+
+mb-epub-loader.o: epub/mb-epub-loader.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mb-epub-loader.o -MD -MP -MF $(DEPDIR)/mb-epub-loader.Tpo -c -o mb-epub-loader.o `test -f 'epub/mb-epub-loader.c' || echo '$(srcdir)/'`epub/mb-epub-loader.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mb-epub-loader.Tpo $(DEPDIR)/mb-epub-loader.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='epub/mb-epub-loader.c' object='mb-epub-loader.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mb-epub-loader.o `test -f 'epub/mb-epub-loader.c' || echo '$(srcdir)/'`epub/mb-epub-loader.c
+
+mb-epub-loader.obj: epub/mb-epub-loader.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mb-epub-loader.obj -MD -MP -MF $(DEPDIR)/mb-epub-loader.Tpo -c -o mb-epub-loader.obj `if test -f 'epub/mb-epub-loader.c'; then $(CYGPATH_W) 'epub/mb-epub-loader.c'; else $(CYGPATH_W) '$(srcdir)/epub/mb-epub-loader.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mb-epub-loader.Tpo $(DEPDIR)/mb-epub-loader.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='epub/mb-epub-loader.c' object='mb-epub-loader.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mb-epub-loader.obj `if test -f 'epub/mb-epub-loader.c'; then $(CYGPATH_W) 'epub/mb-epub-loader.c'; else $(CYGPATH_W) '$(srcdir)/epub/mb-epub-loader.c'; fi`
+
+mb-fb2-loader.o: fb2/mb-fb2-loader.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mb-fb2-loader.o -MD -MP -MF $(DEPDIR)/mb-fb2-loader.Tpo -c -o mb-fb2-loader.o `test -f 'fb2/mb-fb2-loader.c' || echo '$(srcdir)/'`fb2/mb-fb2-loader.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mb-fb2-loader.Tpo $(DEPDIR)/mb-fb2-loader.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='fb2/mb-fb2-loader.c' object='mb-fb2-loader.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mb-fb2-loader.o `test -f 'fb2/mb-fb2-loader.c' || echo '$(srcdir)/'`fb2/mb-fb2-loader.c
+
+mb-fb2-loader.obj: fb2/mb-fb2-loader.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mb-fb2-loader.obj -MD -MP -MF $(DEPDIR)/mb-fb2-loader.Tpo -c -o mb-fb2-loader.obj `if test -f 'fb2/mb-fb2-loader.c'; then $(CYGPATH_W) 'fb2/mb-fb2-loader.c'; else $(CYGPATH_W) '$(srcdir)/fb2/mb-fb2-loader.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mb-fb2-loader.Tpo $(DEPDIR)/mb-fb2-loader.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='fb2/mb-fb2-loader.c' object='mb-fb2-loader.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mb-fb2-loader.obj `if test -f 'fb2/mb-fb2-loader.c'; then $(CYGPATH_W) 'fb2/mb-fb2-loader.c'; else $(CYGPATH_W) '$(srcdir)/fb2/mb-fb2-loader.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

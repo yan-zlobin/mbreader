@@ -6,8 +6,8 @@
  */
 
 #include "mb-loader.h"
-#include "mb-fb2-loader.h"
-#include "mb-epub-loader.h"
+#include "fb2/mb-fb2-loader.h"
+#include "epub/mb-epub-loader.h"
 
 #define MB_LOADER_GET_PRIVATE(obj)  \
 	(G_TYPE_INSTANCE_GET_PRIVATE ((obj), MB_TYPE_LOADER, MbLoaderPrivate))
