@@ -233,24 +233,13 @@ mb_fb2_parser_end_element (ParserState *state, const xmlChar *name)
 		{
 			if (state->book_body)
 			{
-				// printf ("%s\n\n", state->paragraph->str);
-
-				mb_book_buffer_paragraph_append (book_buffer,
+				mb_book_buffer_paragraph_append (state->buffer,
 				                                 state->paragraph->str,
 				                                 state->paragraph->len);
-
+				
 				state->paragraph = g_string_truncate (state->paragraph, 0);
 			}
 
-			// printf ("name: %s", name);
-			
-			/*
-			if (state->book_body)
-			{
-				libmbreader_fb2_text_utils_insert_blank_line (state->buffer, &state->current_iter);
-			}
-			*/
-			
 			break;
 		}
 		case PARSER_PART:

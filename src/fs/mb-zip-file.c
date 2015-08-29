@@ -127,7 +127,7 @@ mb_zip_file_get_file (MbZipFile *file, gchar *filename, gsize *size)
 
 	if (stat_rc == -1)
 	{
-		g_warning ("Error reading %s", filename);
+		g_warning ("Error reading %s from zip", filename);
 		
 		return result;
 	}
@@ -203,8 +203,8 @@ file_open (MbZipFile *file, gchar *filename)
 			    || g_str_has_suffix (stat.name, ".epub")
 			    || g_str_has_suffix (stat.name, ".zip"))
 			{
-				priv->files = g_slist_prepend (priv->files, COPY (file,
-				                                                  stat.name));
+				priv->files = g_slist_prepend (priv->files,
+				                               COPY (file, stat.name));
 
 				priv->file_count++;
 			}

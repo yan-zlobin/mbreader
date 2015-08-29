@@ -18,6 +18,7 @@
  */
 
 #include "mb-loader.h"
+#include "fs/mb-file.h"
 #include "fb2/mb-fb2-loader.h"
 #include "epub/mb-epub-loader.h"
 
@@ -50,10 +51,15 @@ static guint mb_loader_signals[SIGNAL_LAST] = { 0 };
 
 static void mb_loader_finalize (GObject *object);
 
-static gchar *mb_loader_get_error_message (MbLoader *loader,
-                                           MbLoaderError error);
+static void load_from_epub (MbLoader *loader);
 
-static gboolean file_exists (MbLoader *loader);
+static void load_from_fb2 (MbLoader *loader);
+
+static void load_from_fb2_zip (MbLoader *loader, MbFile *file);
+
+static void load_from_zip (MbLoader *loader);
+
+static gchar *get_error_message (MbLoader *loader, MbLoaderError error);
 
 static void loading_completed_callback (MbFb2Loader *fb2_loader,
                                         MbBookBuffer *buffer, MbLoader *loader);
@@ -122,48 +128,112 @@ mb_loader_new (gchar *filename)
 void
 mb_loader_load_book (MbLoader *loader)
 {
-	if (!file_exists (loader))
-	{
-		return;
-	}
-
 	MbLoaderPrivate *priv;
-	gchar *filename;
+	MbFile *file;
 
 	priv = loader->priv;
-	filename = priv->filename;
+	file = mb_file_new (priv->filename);
 
-	if (g_str_has_suffix (filename, ".fb2")
-	    || g_str_has_suffix (filename, ".fb2.gz"))
+	if (file)
 	{
-		MbFb2Loader *fb2_loader;
+		switch (FILE_TYPE (file))
+		{
+			case MB_FILE_TYPE_EPUB:
+			{
+				load_from_epub (loader);
+				
+				break;
+			}
+			case MB_FILE_TYPE_FB2:
+			{
+				load_from_fb2 (loader);
+			
+				break;
+			}
+			case MB_FILE_TYPE_FB2_ZIP:
+			{
+				load_from_fb2_zip (loader, file);
+				
+				break;
+			}
+			case MB_FILE_TYPE_ZIP:
+			{
+				load_from_zip (loader);
 
-		fb2_loader = mb_fb2_loader_new (filename);
+				break;
+			}
+			default:
+			{
+				break;
+			}
+		}
 
-		g_signal_connect (fb2_loader, "loading-completed",
-		                  G_CALLBACK (loading_completed_callback), loader);
-
-		g_signal_connect (fb2_loader, "loading-error",
-		                  G_CALLBACK (loading_error_callback), loader);
-
-		mb_fb2_loader_load_from_fb2_file (fb2_loader);
-
+		g_object_unref (file);
 	}
-	else if (g_str_has_suffix (filename, ".fb2.zip"))
+	else
 	{
-		MbFb2Loader *fb2_loader;
+		gchar *message;
+				
+		message = get_error_message (loader, MB_LOADER_ERROR_FILE_NOT_EXISTS);
+		
+		g_signal_emit (loader, mb_loader_signals[SIGNAL_LOADING_ERROR], 0,
+		               message, NULL);
 
-		fb2_loader = mb_fb2_loader_new (filename);
-
-		g_signal_connect (fb2_loader, "loading-completed",
-		                  G_CALLBACK (loading_completed_callback), loader);
-
-		mb_fb2_loader_load_from_zip_file (fb2_loader);
+		g_free (message);
 	}
 }
 
+static void
+load_from_epub (MbLoader *loader)
+{
+}
+
+static void
+load_from_fb2 (MbLoader *loader)
+{
+	MbFb2Loader *fb2_loader;
+
+	fb2_loader = mb_fb2_loader_new (loader->priv->filename);
+
+	g_signal_connect (fb2_loader, "loading-completed",
+	                  G_CALLBACK (loading_completed_callback), loader);
+
+	g_signal_connect (fb2_loader, "loading-error",
+	                  G_CALLBACK (loading_error_callback), loader);
+
+	mb_fb2_loader_load_from_fb2_file (fb2_loader);
+}
+
+static void
+load_from_fb2_zip (MbLoader *loader, MbFile *file)
+{
+	MbFb2Loader *fb2_loader;
+	gchar *contents;
+	gsize size;
+
+	contents = mb_file_get_contents (file, NULL, &size);
+
+	if (contents)
+	{
+		fb2_loader = mb_fb2_loader_new_with_size (contents, size);
+
+		g_signal_connect (fb2_loader, "loading-completed",
+			              G_CALLBACK (loading_completed_callback), loader);
+
+		g_signal_connect (fb2_loader, "loading-error",
+			              G_CALLBACK (loading_error_callback), loader);
+
+		mb_fb2_loader_load_from_memory (fb2_loader);
+	}
+}
+
+static void
+load_from_zip (MbLoader *loader)
+{
+}
+
 static gchar *
-mb_loader_get_error_message (MbLoader *loader, MbLoaderError error)
+get_error_message (MbLoader *loader, MbLoaderError error)
 {
 	MbLoaderPrivate *priv;
 	gchar *message = NULL;
@@ -194,38 +264,14 @@ mb_loader_get_error_message (MbLoader *loader, MbLoaderError error)
 	return message;
 }
 
-static gboolean
-file_exists (MbLoader *loader)
-{
-	MbLoaderPrivate *priv;
-	gchar *message;
-	gboolean result;
-
-	priv = loader->priv;
-	result = g_file_test (priv->filename, G_FILE_TEST_IS_REGULAR);
-
-	if (!result)
-	{
-		message = mb_loader_get_error_message (loader,
-		                                       MB_LOADER_ERROR_FILE_NOT_EXISTS);
-		
-		g_signal_emit (loader, mb_loader_signals[SIGNAL_LOADING_ERROR], 0,
-		               message, NULL);
-
-		g_free (message);
-	}
-
-	return result;
-}
-
 static void
 loading_completed_callback (MbFb2Loader *fb2_loader, MbBookBuffer *buffer,
                             MbLoader *loader)
 {
-	g_object_unref (fb2_loader);
-	
 	g_signal_emit (loader, mb_loader_signals[SIGNAL_LOADING_COMPLETED], 0,
 	               buffer, NULL);
+
+	g_object_unref (fb2_loader);
 }
 
 static void

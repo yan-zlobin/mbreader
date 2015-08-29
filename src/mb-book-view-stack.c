@@ -110,6 +110,8 @@ mb_book_view_stack_init (MbBookViewStack *stack)
 	priv->book_view_1 = mb_book_view_new ();
 	priv->book_view_2 = mb_book_view_new ();
 
+	priv->buffer = NULL;
+
 	gtk_stack_set_transition_duration (GTK_STACK (priv->gtk_stack),
 	                                   PAGE_FLIPPING_DURATION);
 

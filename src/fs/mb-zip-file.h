@@ -22,7 +22,7 @@
 
 #include <glib-object.h>
 
-#define ZIP_FIRST_FILE(obj)				(mb_zip_file_get_list (obj)->data)
+#define ZIP_FIRST_FILENAME(obj)			(mb_zip_file_get_list (obj)->data)
 
 G_BEGIN_DECLS
 

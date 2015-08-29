@@ -22,6 +22,8 @@
 #include "mb-fb2-parser-end-element.h"
 #include "mb-fb2-parser-characters.h"
 
+static ParserSAXResult check_parse_result (ParserState *state, int rc);
+
 static void start_document (ParserState *state);
 
 static void end_document (ParserState *state);
@@ -61,26 +63,27 @@ mb_fb2_parser_parse_file (MbBookBuffer *buffer, gchar *filename)
 
 	rc = 0;
 	ParserState state = { 0 };
-	book_buffer = buffer;
+	state.buffer = buffer;
 
 	rc = xmlSAXUserParseFile (&sax_handler, &state, filename);
+	result = check_parse_result (&state, rc);
 
-	if (rc < 0)
-	{
-		result = PARSER_SAX_RESULT_NOT_VALID_XML_FILE;
-	}
-	else if (state.state == PARSER_UNKNOWN)
-	{
-		result = PARSER_SAX_RESULT_NOT_WELL_FORMED_DOCUMENT;
-	}
-	else if (state.state != PARSER_FINISH)
-	{
-		result = PARSER_SAX_RESULT_NOT_FINISH_STATE;
-	}
-	else
-	{
-		result = PARSER_SAX_RESULT_SUCCESS;
-	}
+	return result;
+}
+
+ParserSAXResult
+mb_fb2_parser_parse_memory (MbBookBuffer *buffer, const gchar *contents,
+                            gsize size)
+{
+	gint rc;
+	ParserSAXResult result;
+
+	rc = 0;
+	ParserState state = { 0 };
+	state.buffer = buffer;
+
+	rc = xmlSAXUserParseMemory (&sax_handler, &state, contents, size);
+	result = check_parse_result (&state, rc);
 
 	return result;
 }
@@ -109,6 +112,31 @@ remove_state_from_history (ParserState *state)
 		state->state = (SAXState) state->history->data;
 		state->history = g_list_remove (state->history, (gpointer) state->state);
 	}
+}
+
+static ParserSAXResult
+check_parse_result (ParserState *state, int rc)
+{
+	ParserSAXResult result;
+
+	if (rc < 0)
+	{
+		result = PARSER_SAX_RESULT_NOT_VALID_XML_FILE;
+	}
+	else if (state->state == PARSER_UNKNOWN)
+	{
+		result = PARSER_SAX_RESULT_NOT_WELL_FORMED_DOCUMENT;
+	}
+	else if (state->state != PARSER_FINISH)
+	{
+		result = PARSER_SAX_RESULT_NOT_FINISH_STATE;
+	}
+	else
+	{
+		result = PARSER_SAX_RESULT_SUCCESS;
+	}
+
+	return result;
 }
 
 static void

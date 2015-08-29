@@ -473,13 +473,6 @@ mb_book_view_set_buffer (MbBookView *view, MbBookBuffer *buffer)
 
 	priv = view->priv;
 
-	if (priv->buffer)
-	{
-		g_object_unref (priv->buffer);
-		
-		priv->buffer = NULL;
-	}
-
 	priv->buffer = buffer;
 
 	priv->first_section = 0;

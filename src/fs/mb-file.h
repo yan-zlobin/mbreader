@@ -22,7 +22,9 @@
 
 #include <glib-object.h>
 
+#define FILE_TYPE(obj)				(mb_file_get_file_type (obj))
 #define SINGLE_FILE(obj)			(mb_file_get_count (obj) == 1)
+#define INTERN_FILENAME(obj)		(mb_file_get_intern_filename (obj))
 
 G_BEGIN_DECLS
 
@@ -69,7 +71,11 @@ MbFile *mb_file_new (gchar *filename);
 
 guint mb_file_get_count (MbFile *file);
 
+MbFileType mb_file_get_file_type (MbFile *file);
+
 GSList *mb_file_get_list (MbFile *file);
+
+gchar *mb_file_get_contents (MbFile *file, gchar *filename, gsize *size);
 
 MbBookPreview *mb_file_get_preview (MbFile *file, gchar *filename);
 

@@ -38,6 +38,7 @@ typedef enum _MbFb2LoaderError MbFb2LoaderError;
 
 typedef struct _MbFb2Loader MbFb2Loader;
 typedef struct _MbFb2LoaderClass MbFb2LoaderClass;
+typedef struct _MbFb2LoaderPrivate MbFb2LoaderPrivate;
 
 enum _MbFb2LoaderError
 {
@@ -50,7 +51,7 @@ struct _MbFb2Loader
 {
 	GObject parent_instance;
 
-	gchar *filename;
+	MbFb2LoaderPrivate *priv;
 };
 
 struct _MbFb2LoaderClass
@@ -64,11 +65,13 @@ struct _MbFb2LoaderClass
 
 GType mb_fb2_loader_get_type (void) G_GNUC_CONST;
 
-MbFb2Loader *mb_fb2_loader_new (gchar *filename);
+MbFb2Loader *mb_fb2_loader_new (gchar *file);
+
+MbFb2Loader *mb_fb2_loader_new_with_size (gchar *file, gsize size);
 
 void mb_fb2_loader_load_from_fb2_file (MbFb2Loader *loader);
 
-void mb_fb2_loader_load_from_zip_file (MbFb2Loader *loader);
+void mb_fb2_loader_load_from_memory (MbFb2Loader *loader);
 
 gchar *mb_fb2_loader_get_error_name (MbFb2LoaderError error);
 

@@ -29,6 +29,8 @@ struct _MbLibraryPrivate
 {
 	MbReference *reference;
 	MbStorage *storage;
+
+	gboolean started;
 };
 
 enum
@@ -52,6 +54,8 @@ mb_library_init (MbLibrary *library)
 
 	priv = MB_LIBRARY_GET_PRIVATE (library);
 	library->priv = priv;
+
+	priv->started = FALSE;
 }
 
 static void
@@ -108,7 +112,16 @@ mb_library_new (MbReference *reference)
 void
 mb_library_start (MbLibrary *library)
 {
-	mb_storage_open (library->priv->storage);
+	MbLibraryPrivate *priv;
+
+	priv = library->priv;
+	
+	if (!priv->started)
+	{
+		mb_storage_open (priv->storage);
+
+		priv->started = TRUE;
+	}
 }
 
 void

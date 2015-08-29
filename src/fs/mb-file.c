@@ -113,6 +113,14 @@ mb_file_new (gchar *filename)
 		else
 		{
 			file_open (file);
+
+			if (priv->type == MB_FILE_TYPE_ZIP && SINGLE_FILE (file))
+			{
+				if (g_str_has_suffix (INTERN_FILENAME (file), ".fb2"))
+				{
+					priv->type = MB_FILE_TYPE_FB2_ZIP;
+				}
+			}
 		}
 	}
 
@@ -136,6 +144,12 @@ mb_file_get_count (MbFile *file)
 	}
 }
 
+MbFileType
+mb_file_get_file_type (MbFile *file)
+{
+	return file->priv->type;
+}
+
 GSList *
 mb_file_get_list (MbFile *file)
 {
@@ -154,6 +168,34 @@ mb_file_get_list (MbFile *file)
 	}
 
 	return list;
+}
+
+gchar *
+mb_file_get_contents (MbFile *file, gchar *filename, gsize *size)
+{
+	MbFilePrivate *priv;
+	gchar *contents = NULL;
+
+	priv = file->priv;
+	
+	if (priv->type == MB_FILE_TYPE_FB2)
+	{
+		g_file_get_contents (filename, &contents, size, NULL);
+	}
+	else if (priv->zip_file)
+	{
+		if (filename)
+		{
+			contents = mb_zip_file_get_file (priv->zip_file, filename, size);
+		}
+		else
+		{
+			contents = mb_zip_file_get_file (priv->zip_file,
+			                                 INTERN_FILENAME (file), size);
+		}
+	}
+	
+	return contents;
 }
 
 MbBookPreview *
@@ -211,7 +253,7 @@ mb_file_get_intern_filename (MbFile *file)
 		if (priv->type == MB_FILE_TYPE_FB2_ZIP
 		    || priv->type == MB_FILE_TYPE_ZIP)
 		{
-			intern_filename = ZIP_FIRST_FILE (priv->zip_file);
+			intern_filename = ZIP_FIRST_FILENAME (priv->zip_file);
 		}
 	}
 
@@ -230,17 +272,13 @@ file_check (MbFile *file)
 	{
 		priv->type = MB_FILE_TYPE_FB2;
 	}
-	else if (g_str_has_suffix (priv->filename, ".fb2.zip"))
+	else if (g_str_has_suffix (priv->filename, ".zip"))
 	{
-		priv->type = MB_FILE_TYPE_FB2_ZIP;
+		priv->type = MB_FILE_TYPE_ZIP;
 	}
 	else if (g_str_has_suffix (priv->filename, ".epub"))
 	{
 		priv->type = MB_FILE_TYPE_EPUB;
-	}
-	else if (g_str_has_suffix (priv->filename, ".zip"))
-	{
-		priv->type = MB_FILE_TYPE_ZIP;
 	}
 	else
 	{
@@ -291,33 +329,30 @@ get_preview (MbFile *file, gchar *filename, gboolean full_data)
 
 	priv = file->priv;
 
-	if (SINGLE_FILE (file))
+	switch (FILE_TYPE (file))
 	{
-		if (priv->type == MB_FILE_TYPE_FB2)
+		case MB_FILE_TYPE_FB2:
 		{
 			preview = mb_book_preview_new_from_file (priv->filename, full_data);
-		}
-		else if (priv->type == MB_FILE_TYPE_FB2_ZIP)
-		{
-			gchar *intern_filename;
 
-			intern_filename = ZIP_FIRST_FILE (priv->zip_file);
-			
-			contents = mb_zip_file_get_file (priv->zip_file, intern_filename,
-			                                 &size);
+			break;
+		}
+		case MB_FILE_TYPE_FB2_ZIP:
+		{
+			contents = mb_zip_file_get_file (priv->zip_file,
+			                                 INTERN_FILENAME (file), &size);
 
 			preview = mb_book_preview_new_from_memory (contents, size,
 			                                           full_data);
-
+			
 			g_free (contents);
-		}
-	}
-	else
-	{
-		contents = mb_zip_file_get_file (priv->zip_file, filename, &size);
-		preview = mb_book_preview_new_from_memory (contents, size, full_data);
 
-		g_free (contents);
+			break;
+		}
+		default:
+		{
+			break;
+		}
 	}
 
 	return preview;

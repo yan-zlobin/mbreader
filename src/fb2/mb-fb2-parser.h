@@ -112,7 +112,7 @@ struct _ParserState
 {
 	SAXState state;
 
-	// MbBookBuffer *buffer;
+	MbBookBuffer *buffer;
 
 	gboolean book_body;
 
@@ -121,11 +121,10 @@ struct _ParserState
 	GString *paragraph;
 };
 
-MbBookBuffer *book_buffer;
-
 ParserSAXResult mb_fb2_parser_parse_file (MbBookBuffer *buffer, gchar *filename);
 
-ParserSAXResult mb_fb2_parser_parse_memory (const gchar *buffer, gint len);
+ParserSAXResult mb_fb2_parser_parse_memory (MbBookBuffer *buffer,
+                                            const gchar *contents, gsize size);
 
 void save_state_to_history (ParserState *state);
 

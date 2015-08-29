@@ -20,6 +20,15 @@
 #include "mb-fb2-loader.h"
 #include "mb-fb2-parser.h"
 
+#define MB_FB2_LOADER_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), \
+	MB_TYPE_FB2_LOADER, MbFb2LoaderPrivate))
+
+struct _MbFb2LoaderPrivate
+{
+	gchar *file;
+	gsize size;
+};
+
 enum
 {
 	SIGNAL_LOADING_COMPLETED,
@@ -33,17 +42,31 @@ static void mb_fb2_loader_finalize (GObject *object);
 
 static void load_book_from_file (MbFb2Loader *loader);
 
+static void load_book_from_memory (MbFb2Loader *loader);
+
+static void check_parse_status (MbFb2Loader *loader, MbBookBuffer *buffer,
+                                ParserSAXResult rc);
+
 G_DEFINE_TYPE (MbFb2Loader, mb_fb2_loader, G_TYPE_OBJECT);
 
 static void
 mb_fb2_loader_init (MbFb2Loader *loader)
 {
+	MbFb2LoaderPrivate *priv;
+
+	priv = MB_FB2_LOADER_GET_PRIVATE (loader);
+	loader->priv = priv;
+
+	priv->file = NULL;
+	priv->size = 0;
 }
 
 static void
 mb_fb2_loader_class_init (MbFb2LoaderClass *klass)
 {
 	GObjectClass *gobject_class;
+
+	g_type_class_add_private (klass, sizeof (MbFb2LoaderPrivate));
 	
 	gobject_class = G_OBJECT_CLASS (klass);
 
@@ -71,12 +94,23 @@ mb_fb2_loader_finalize (GObject *object)
 }
 
 MbFb2Loader *
-mb_fb2_loader_new (gchar *filename)
+mb_fb2_loader_new (gchar *file)
 {
 	MbFb2Loader *loader;
 
 	loader = g_object_new (MB_TYPE_FB2_LOADER, NULL);
-	loader->filename = filename;
+	loader->priv->file = file;
+
+	return loader;
+}
+
+MbFb2Loader *
+mb_fb2_loader_new_with_size (gchar *file, gsize size)
+{
+	MbFb2Loader *loader;
+
+	loader = mb_fb2_loader_new (file);
+	loader->priv->size = size;
 
 	return loader;
 }
@@ -88,9 +122,9 @@ mb_fb2_loader_load_from_fb2_file (MbFb2Loader *loader)
 }
 
 void
-mb_fb2_loader_load_from_zip_file (MbFb2Loader *loader)
+mb_fb2_loader_load_from_memory (MbFb2Loader *loader)
 {
-	
+	g_thread_new (NULL, (GThreadFunc) load_book_from_memory, (gpointer) loader);
 }
 
 gchar *
@@ -117,32 +151,60 @@ static void
 load_book_from_file (MbFb2Loader *loader)
 {
 	MbBookBuffer *buffer;
-	ParserSAXResult parser_result;
-	gchar *filename;
+	ParserSAXResult rc;
 
 	buffer = mb_book_buffer_new ();
-	filename = loader->filename;
+	rc = mb_fb2_parser_parse_file (buffer, loader->priv->file);
 
-	parser_result = mb_fb2_parser_parse_file (buffer, filename);
+	check_parse_status (loader, buffer, rc);
+}
 
-	if (parser_result == PARSER_SAX_RESULT_SUCCESS)
+static void
+load_book_from_memory (MbFb2Loader *loader)
+{
+	MbFb2LoaderPrivate *priv;
+	MbBookBuffer *buffer;
+	ParserSAXResult rc;
+
+	priv = loader->priv;
+
+	buffer = mb_book_buffer_new ();
+	rc = mb_fb2_parser_parse_memory (buffer, priv->file, priv->size);
+
+	g_free (priv->file);
+
+	check_parse_status (loader, buffer, rc);
+}
+
+static void
+check_parse_status (MbFb2Loader *loader, MbBookBuffer *buffer,
+                    ParserSAXResult rc)
+{
+	if (rc == PARSER_SAX_RESULT_SUCCESS)
 	{
 		g_signal_emit (loader, mb_fb2_loader_signals[SIGNAL_LOADING_COMPLETED],
 		               0, buffer);
 	}
-	else if (parser_result == PARSER_SAX_RESULT_NOT_FINISH_STATE)
+	else if (rc == PARSER_SAX_RESULT_NOT_FINISH_STATE)
 	{
 		g_signal_emit (loader, mb_fb2_loader_signals[SIGNAL_LOADING_ERROR],
 		               0, MB_FB2_LOADER_ERROR_PARSE);
+
+		g_object_unref (buffer);
 	}
-	else if (parser_result == PARSER_SAX_RESULT_NOT_WELL_FORMED_DOCUMENT)
+	else if (rc == PARSER_SAX_RESULT_NOT_WELL_FORMED_DOCUMENT)
 	{
 		g_signal_emit (loader, mb_fb2_loader_signals[SIGNAL_LOADING_ERROR],
 		               0, MB_FB2_LOADER_ERROR_NOT_WELL_FORMED_DOCUMENT);
+
+		g_object_unref (buffer);
 	}
 	else
 	{
 		g_signal_emit (loader, mb_fb2_loader_signals[SIGNAL_LOADING_ERROR],
 		               0, MB_FB2_LOADER_ERROR_NOT_VALID_XML_FILE);
+
+		g_object_unref (buffer);
 	}
 }
+
