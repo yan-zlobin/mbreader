@@ -23,7 +23,8 @@
 #include <glib-object.h>
 
 #define FILE_TYPE(obj)				(mb_file_get_file_type (obj))
-#define SINGLE_FILE(obj)			(mb_file_get_count (obj) == 1)
+#define FILE_COUNT(obj)				(mb_file_get_count (obj))
+#define SINGLE_FILE(obj)			(FILE_COUNT (obj) == 1)
 #define INTERN_FILENAME(obj)		(mb_file_get_intern_filename (obj))
 
 G_BEGIN_DECLS
@@ -67,7 +68,7 @@ struct _MbFileClass
 
 GType mb_file_get_type (void) G_GNUC_CONST;
 
-MbFile *mb_file_new (gchar *filename);
+MbFile *mb_file_new (const gchar *filename);
 
 guint mb_file_get_count (MbFile *file);
 

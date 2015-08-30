@@ -197,11 +197,15 @@ file_open (MbZipFile *file, gchar *filename)
 		{
 			zip_stat_index (priv->archive, i, 0, &stat);
 
+			/*
 			if (g_str_has_suffix (stat.name, ".fb2")
 			    || g_str_has_suffix (stat.name, ".fb2.gz")
 			    || g_str_has_suffix (stat.name, ".fb2.zip")
-			    || g_str_has_suffix (stat.name, ".epub")
+			    || g_str_has_suffix (stat.name, ".epub"))
 			    || g_str_has_suffix (stat.name, ".zip"))
+			*/
+			if (g_str_has_suffix (stat.name, ".fb2")
+			    || g_str_has_suffix (stat.name, ".fb2.gz"))
 			{
 				priv->files = g_slist_prepend (priv->files,
 				                               COPY (file, stat.name));

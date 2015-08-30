@@ -23,6 +23,7 @@
 #include <glib-object.h>
 
 #define ZIP_FIRST_FILENAME(obj)			(mb_zip_file_get_list (obj)->data)
+#define ZIP_FILE_COUNT(obj)				(mb_zip_file_get_count (obj))
 
 G_BEGIN_DECLS
 

@@ -19,7 +19,6 @@
 
 #include <gtk/gtk.h>
 #include "mb-preview-widget.h"
-#include "../fs/mb-file.h"
 
 #define DEFAULT_WIDGET_WIDTH	160
 #define DEFAULT_COVER_WIDTH		160
@@ -29,8 +28,7 @@
 
 struct _MbPreviewWidgetPrivate
 {
-	gchar *filename;
-
+	MbFile *file;
 	MbBookPreview *preview;
 	MbReference *reference;
 };
@@ -61,7 +59,7 @@ mb_preview_widget_init (MbPreviewWidget *widget)
 	priv = MB_PREVIEW_WIDGET_GET_PRIVATE (widget);
 	widget->priv = priv;
 
-	priv->filename = NULL;
+	priv->file = NULL;
 	priv->preview = NULL;
 }
 
@@ -203,11 +201,24 @@ mb_preview_widget_draw (GtkWidget *widget, cairo_t *cr)
 		                                                preview->genres);
 		if (genres)
 		{
-			height = print_text (widget, cr, genres, top, TRUE, FALSE);
-			top = top + height + margin;
+			print_text (widget, cr, genres, top, TRUE, FALSE);
 
 			g_free (genres);
 		}
+	}
+	else if (FILE_COUNT (priv->file) > 0)
+	{
+		gchar *book_count;
+
+		height = print_text (widget, cr, "Архив ZIP", top, TRUE, TRUE);
+		top = top + height + margin;
+
+		book_count = g_strdup_printf ("Книг в архиве: %u",
+		                              FILE_COUNT (priv->file));
+
+		print_text (widget, cr, book_count, top, TRUE, FALSE);
+
+		g_free (book_count);
 	}
 	
 	return TRUE;
@@ -243,11 +254,11 @@ mb_preview_widget_finalize (GObject *object)
 	widget = MB_PREVIEW_WIDGET (object);
 	priv = widget->priv;
 
-	if (priv->filename)
+	if (priv->file)
 	{
-		g_free (priv->filename);
+		g_object_unref (priv->file);
 	}
-
+	
 	mb_book_preview_free (priv->preview);
 
 	G_OBJECT_CLASS (mb_preview_widget_parent_class)->finalize (object);
@@ -273,21 +284,19 @@ mb_preview_widget_new (MbReference *reference)
 	return widget;
 }
 
-gboolean
-mb_preview_widget_set_filename (MbPreviewWidget *widget, gchar *filename)
+void
+mb_preview_widget_set_file (MbPreviewWidget *widget, MbFile *file)
 {
 	MbPreviewWidgetPrivate *priv;
 	MbBookPreview *preview;
-	MbFile *file;
-	gboolean result = FALSE;
 
 	priv = widget->priv;
 
-	if (priv->filename)
+	if (priv->file)
 	{
-		g_free (priv->filename);
+		g_object_unref (priv->file);
 
-		priv->filename = NULL;
+		priv->file = NULL;
 	}
 
 	if (priv->preview)
@@ -297,31 +306,19 @@ mb_preview_widget_set_filename (MbPreviewWidget *widget, gchar *filename)
 		priv->preview = NULL;
 	}
 
-	file = mb_file_new (filename);
-
-	if (!file)
-	{
-		return result;
-	}
-
-	priv->filename = filename;
+	priv->file = file;
 
 	if (SINGLE_FILE (file)) 
 	{
-		preview = mb_file_get_preview (file, priv->filename);
+		preview = mb_file_get_preview (file, NULL);
 
 		if (preview)
 		{
-			result = TRUE;
 			priv->preview = preview;
-
-			gtk_widget_queue_resize (GTK_WIDGET (widget));
 		}
 	}
 
-	g_object_unref (file);
-
-	return result;
+	gtk_widget_queue_resize (GTK_WIDGET (widget));
 }
 
 static gint

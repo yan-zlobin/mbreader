@@ -90,7 +90,7 @@ mb_file_finalize (GObject *object)
 }
 
 MbFile *
-mb_file_new (gchar *filename)
+mb_file_new (const gchar *filename)
 {
 	MbFile *file = NULL;
 	MbFilePrivate *priv;
@@ -114,7 +114,13 @@ mb_file_new (gchar *filename)
 		{
 			file_open (file);
 
-			if (priv->type == MB_FILE_TYPE_ZIP && SINGLE_FILE (file))
+			if (priv->type == MB_FILE_TYPE_UNKNOWN)
+			{
+				g_object_unref (file);
+
+				file = NULL;
+			}
+			else if (priv->type == MB_FILE_TYPE_ZIP && SINGLE_FILE (file))
 			{
 				if (g_str_has_suffix (INTERN_FILENAME (file), ".fb2"))
 				{
@@ -140,7 +146,7 @@ mb_file_get_count (MbFile *file)
 	}
 	else
 	{
-		return (guint) mb_zip_file_get_count (priv->zip_file);
+		return (guint) ZIP_FILE_COUNT (priv->zip_file);
 	}
 }
 
@@ -309,6 +315,11 @@ file_open (MbFile *file)
 		case MB_FILE_TYPE_ZIP:
 		{
 			priv->zip_file = mb_zip_file_new (priv->filename);
+
+			if (ZIP_FILE_COUNT (priv->zip_file) == 0)
+			{
+				priv->type = MB_FILE_TYPE_UNKNOWN;
+			}
 
 			break;
 		}

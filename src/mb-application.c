@@ -95,6 +95,9 @@ static void fs_file_updated_callback (MbFileSystem *fs, gchar *filename,
 static void library_ready_callback (MbLibrary *library,
                                     MbApplication *application);
 
+static gboolean zip_filter_callback (const GtkFileFilterInfo *filter_info,
+                                     gpointer data);
+
 const GActionEntry app_entries[] =
 {
 	{ "open", menu_open_callback, NULL, NULL, NULL },
@@ -297,7 +300,7 @@ open_file (MbApplication *application)
 	GtkWidget *preview;
 	GtkFileChooser *chooser;
 	GtkFileFilter *fb2_filter;
-	GtkFileFilter *comics_filter;
+	GtkFileFilter *zip_filter;
 	gchar *filename;
 	gint res;
 
@@ -310,20 +313,21 @@ open_file (MbApplication *application)
 
 	chooser = GTK_FILE_CHOOSER (dialog);
 	fb2_filter = gtk_file_filter_new ();
-	comics_filter = gtk_file_filter_new ();
+	zip_filter = gtk_file_filter_new ();
 	preview = mb_preview_widget_new (priv->reference);
 
-	gtk_file_filter_set_name (fb2_filter, "Книги fb2");
+	gtk_file_filter_set_name (fb2_filter, "Электронные книги fb2");
 	gtk_file_filter_add_pattern (fb2_filter, "*.fb2");
-	gtk_file_filter_add_pattern (fb2_filter, "*.fb2.zip");
 	gtk_file_filter_add_pattern (fb2_filter, "*.fb2.gz");
 	gtk_file_filter_add_pattern (fb2_filter, "*.fb2.zip");
 
-	gtk_file_filter_set_name (comics_filter, "Комиксы");
-	gtk_file_filter_add_pattern (comics_filter, "*.cbr");
+	gtk_file_filter_set_name (zip_filter, "Архивы ZIP");
+	gtk_file_filter_add_custom (zip_filter, GTK_FILE_FILTER_FILENAME,
+	                            (GtkFileFilterFunc) zip_filter_callback, NULL,
+	                            NULL);
 
 	gtk_file_chooser_add_filter (chooser, fb2_filter);
-	gtk_file_chooser_add_filter (chooser, comics_filter);
+	gtk_file_chooser_add_filter (chooser, zip_filter);
 	gtk_file_chooser_set_filter (chooser, fb2_filter);
 
 	gtk_file_chooser_set_use_preview_label (chooser, FALSE);
@@ -425,27 +429,27 @@ static void
 update_preview_callback (GtkFileChooser *chooser, GtkWidget *preview)
 {
 	gchar *filename;
+	gboolean active;
+	MbFile *file;
 
 	filename = (gchar *) gtk_file_chooser_get_preview_filename (chooser);
+	active = FALSE;
 
-	if (g_file_test (filename, G_FILE_TEST_IS_REGULAR))
+	if (filename)
 	{
-		if (mb_preview_widget_set_filename (MB_PREVIEW_WIDGET (preview),
-		                                    filename))
-		{
-			gtk_file_chooser_set_preview_widget_active (chooser, TRUE);
-		}
-		else
-		{
-			gtk_file_chooser_set_preview_widget_active (chooser, FALSE);
-		}
-	}
-	else
-	{
-		gtk_file_chooser_set_preview_widget_active (chooser, FALSE);
+		file = mb_file_new (filename);
 
+		if (file)
+		{
+			mb_preview_widget_set_file (MB_PREVIEW_WIDGET (preview), file);
+
+			active = TRUE;
+		}
+		
 		g_free (filename);
 	}
+
+	gtk_file_chooser_set_preview_widget_active (chooser, active);
 }
 
 static void
@@ -465,5 +469,27 @@ static void
 library_ready_callback (MbLibrary *library, MbApplication *application)
 {
 	mb_file_system_open (application->priv->fs, DEFAULT_LIBRARY_FOLDER);
+}
+
+static gboolean
+zip_filter_callback (const GtkFileFilterInfo *filter_info, gpointer data)
+{
+	MbFile *file;
+	gboolean result = FALSE;
+	
+	if (g_str_has_suffix (filter_info->filename, ".zip")
+	    && !g_str_has_suffix (filter_info->filename, "fb2.zip"))
+	{
+		file = mb_file_new (filter_info->filename);
+
+		if (file)
+		{
+			result = TRUE;
+
+			g_object_unref (file);
+		}
+	}
+
+	return result;
 }
 

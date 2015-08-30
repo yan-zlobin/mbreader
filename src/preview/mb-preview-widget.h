@@ -25,6 +25,7 @@
 G_BEGIN_DECLS
 
 #include "mb-reference.h"
+#include "../fs/mb-file.h"
 
 #define MB_TYPE_REVIEW_WIDGET				(mb_preview_widget_get_type ())
 #define MB_PREVIEW_WIDGET(obj)				(G_TYPE_CHECK_INSTANCE_CAST ((obj), MB_TYPE_REVIEW_WIDGET, MbPreviewWidget))
@@ -53,8 +54,7 @@ GType mb_preview_widget_get_type (void) G_GNUC_CONST;
 
 GtkWidget *mb_preview_widget_new (MbReference *reference);
 
-gboolean mb_preview_widget_set_filename (MbPreviewWidget *widget,
-                                         gchar *filename);
+void mb_preview_widget_set_file (MbPreviewWidget *widget, MbFile *file);
 
 G_END_DECLS
 
