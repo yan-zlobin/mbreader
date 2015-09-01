@@ -103,7 +103,8 @@ am_mbreader_OBJECTS = mb-application.$(OBJEXT) \
 	mb-fb2-parser-characters.$(OBJEXT) \
 	mb-fb2-parser-end-element.$(OBJEXT) \
 	mb-fb2-parser-start-element.$(OBJEXT) mb-epub-loader.$(OBJEXT) \
-	mb-fb2-loader.$(OBJEXT) mb-library-view.$(OBJEXT)
+	mb-fb2-loader.$(OBJEXT) mb-library-view.$(OBJEXT) \
+	mb-marshaller.$(OBJEXT)
 mbreader_OBJECTS = $(am_mbreader_OBJECTS)
 am__DEPENDENCIES_1 =
 mbreader_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -379,7 +380,9 @@ mbreader_SOURCES = \
 	fb2/mb-fb2-loader.c \
 	fb2/mb-fb2-loader.h \
 	library/mb-library-view.c \
-	library/mb-library-view.h
+	library/mb-library-view.h \
+	types/mb-marshaller.c \
+	types/mb-marshaller.h
 
 mbreader_LDFLAGS = 
 mbreader_LDADD = $(MBREADER_LIBS)
@@ -493,6 +496,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mb-library-view.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mb-library.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mb-loader.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mb-marshaller.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mb-preview-widget.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mb-profile.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mb-reference.Po@am__quote@
@@ -717,6 +721,20 @@ mb-library-view.obj: library/mb-library-view.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='library/mb-library-view.c' object='mb-library-view.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mb-library-view.obj `if test -f 'library/mb-library-view.c'; then $(CYGPATH_W) 'library/mb-library-view.c'; else $(CYGPATH_W) '$(srcdir)/library/mb-library-view.c'; fi`
+
+mb-marshaller.o: types/mb-marshaller.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mb-marshaller.o -MD -MP -MF $(DEPDIR)/mb-marshaller.Tpo -c -o mb-marshaller.o `test -f 'types/mb-marshaller.c' || echo '$(srcdir)/'`types/mb-marshaller.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mb-marshaller.Tpo $(DEPDIR)/mb-marshaller.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='types/mb-marshaller.c' object='mb-marshaller.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mb-marshaller.o `test -f 'types/mb-marshaller.c' || echo '$(srcdir)/'`types/mb-marshaller.c
+
+mb-marshaller.obj: types/mb-marshaller.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mb-marshaller.obj -MD -MP -MF $(DEPDIR)/mb-marshaller.Tpo -c -o mb-marshaller.obj `if test -f 'types/mb-marshaller.c'; then $(CYGPATH_W) 'types/mb-marshaller.c'; else $(CYGPATH_W) '$(srcdir)/types/mb-marshaller.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mb-marshaller.Tpo $(DEPDIR)/mb-marshaller.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='types/mb-marshaller.c' object='mb-marshaller.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mb-marshaller.obj `if test -f 'types/mb-marshaller.c'; then $(CYGPATH_W) 'types/mb-marshaller.c'; else $(CYGPATH_W) '$(srcdir)/types/mb-marshaller.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

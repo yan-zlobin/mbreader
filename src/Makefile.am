@@ -60,7 +60,9 @@ mbreader_SOURCES =  \
 	fb2/mb-fb2-loader.c \
 	fb2/mb-fb2-loader.h \
 	library/mb-library-view.c \
-	library/mb-library-view.h
+	library/mb-library-view.h \
+	types/mb-marshaller.c \
+	types/mb-marshaller.h
 
 mbreader_LDFLAGS = 
 
