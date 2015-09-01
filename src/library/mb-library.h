@@ -60,7 +60,7 @@ void mb_library_start (MbLibrary *library);
 
 void mb_library_append_file (MbLibrary *library, gchar *filename);
 
-void mb_library_append_file_list (MbLibrary *library, GSList *file_list);
+void mb_library_append_file_list (MbLibrary *library, GList *file_list);
 
 G_END_DECLS
 

@@ -131,7 +131,7 @@ mb_library_append_file (MbLibrary *library, gchar *filename)
 }
 
 void
-mb_library_append_file_list (MbLibrary *library, GSList *file_list)
+mb_library_append_file_list (MbLibrary *library, GList *file_list)
 {
 	mb_storage_append_file_list (library->priv->storage, file_list);
 }

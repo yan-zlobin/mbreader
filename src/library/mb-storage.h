@@ -60,7 +60,7 @@ void mb_storage_open (MbStorage *storage);
 
 void mb_storage_append_file (MbStorage *storage, gchar *filename);
 
-void mb_storage_append_file_list (MbStorage *storage, GSList *file_list);
+void mb_storage_append_file_list (MbStorage *storage, GList *file_list);
 
 G_END_DECLS
 

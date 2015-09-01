@@ -42,7 +42,7 @@ struct _MbStoragePrivate
 	MbReference *reference;
 	sqlite3 *database;
 
-	GSList *errors;
+	GList *errors;
 
 	guint error_file_count;
 	guint file_count;
@@ -168,7 +168,7 @@ mb_storage_finalize (GObject *object)
 
 	if (priv->errors)
 	{
-		g_slist_free_full (priv->errors, g_free);
+		g_list_free_full (priv->errors, g_free);
 	}
 	
 	if (priv->filename)
@@ -210,10 +210,10 @@ mb_storage_append_file (MbStorage *storage, gchar *filename)
 }
 
 void
-mb_storage_append_file_list (MbStorage *storage, GSList *file_list)
+mb_storage_append_file_list (MbStorage *storage, GList *file_list)
 {
 	MbStoragePrivate *priv;
-	GSList *list;
+	GList *list;
 	
 	g_return_if_fail (DB (storage));
 
@@ -231,8 +231,8 @@ mb_storage_append_file_list (MbStorage *storage, GSList *file_list)
 			{
 				priv->error_file_count++;
 
-				priv->errors = g_slist_prepend (priv->errors,
-				                                g_strdup ((gchar *) list->data));
+				priv->errors = g_list_prepend (priv->errors,
+				                               g_strdup ((gchar *) list->data));
 			}
 		}
 	}

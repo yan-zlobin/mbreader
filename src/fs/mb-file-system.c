@@ -50,8 +50,8 @@ static void mb_file_system_finalize (GObject *object);
 
 static gpointer file_system_open (gpointer data);
 
-static GSList *direcotry_open (GSList *file_list, GStringChunk *chunk,
-                         gchar *filename);
+static GList *direcotry_open (GList *file_list, GStringChunk *chunk,
+                              gchar *filename);
 
 G_DEFINE_TYPE (MbFileSystem, mb_file_system, G_TYPE_OBJECT);
 
@@ -141,7 +141,7 @@ file_system_open (gpointer data)
 	MbFileSystem *fs;
 	MbFileSystemPrivate *priv;
 	GStringChunk *chunk;
-	GSList *file_list = NULL;
+	GList *file_list = NULL;
 
 	fs = MB_FILE_SYSTEM (data);
 	priv = fs->priv;
@@ -153,7 +153,7 @@ file_system_open (gpointer data)
 		g_signal_emit (fs, mb_file_system_signals[SIGNAL_FILE_FOUND], 0,
 		               file_list);
 
-		g_slist_free (file_list);
+		g_list_free (file_list);
 	}
 
 	g_string_chunk_free (chunk);
@@ -161,8 +161,8 @@ file_system_open (gpointer data)
 	return (gpointer) file_list;
 }
 
-static GSList *
-direcotry_open (GSList *file_list, GStringChunk *chunk, gchar *filename)
+static GList *
+direcotry_open (GList *file_list, GStringChunk *chunk, gchar *filename)
 {
 	GDir *dir;
 	gchar *dir_filename;
@@ -210,7 +210,7 @@ direcotry_open (GSList *file_list, GStringChunk *chunk, gchar *filename)
 					|| g_str_has_suffix (tmp, ".fb2.gz")
 					|| g_str_has_suffix (tmp, ".fb2.zip"))
 				{
-					file_list = g_slist_prepend (file_list, COPY (chunk, tmp));
+					file_list = g_list_prepend (file_list, COPY (chunk, tmp));
 
 					count++;
 				}
@@ -220,6 +220,11 @@ direcotry_open (GSList *file_list, GStringChunk *chunk, gchar *filename)
 		}
 	}
 	while (dir_filename);
+
+	if (file_list)
+	{
+		file_list = g_list_reverse (file_list);
+	}
 
 	g_dir_close (dir);
 

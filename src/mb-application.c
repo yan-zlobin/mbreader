@@ -86,7 +86,7 @@ static void menu_quit_callback (GSimpleAction *action, GVariant *parameter,
 static void update_preview_callback (GtkFileChooser *chooser,
                                      GtkWidget *preview);
 
-static void fs_file_found_callback (MbFileSystem *fs, GSList *file_list,
+static void fs_file_found_callback (MbFileSystem *fs, GList *file_list,
                                     MbApplication *application);
 
 static void fs_file_updated_callback (MbFileSystem *fs, gchar *filename,
@@ -453,7 +453,7 @@ update_preview_callback (GtkFileChooser *chooser, GtkWidget *preview)
 }
 
 static void
-fs_file_found_callback (MbFileSystem *fs, GSList *file_list,
+fs_file_found_callback (MbFileSystem *fs, GList *file_list,
                         MbApplication *application)
 {
 	mb_library_append_file_list (application->priv->library, file_list);

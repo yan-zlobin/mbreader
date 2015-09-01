@@ -47,7 +47,7 @@ struct _MbFileSystemClass
 	GObjectClass parent_class;
 
 	/* Signals */
-	void (*file_found)						(MbFileSystem *fs, GSList *file_list);
+	void (*file_found)						(MbFileSystem *fs, GList *file_list);
 	void (*file_updated)					(MbFileSystem *fs, gchar *filename);
 };
 
