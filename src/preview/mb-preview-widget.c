@@ -138,6 +138,7 @@ mb_preview_widget_draw (GtkWidget *widget, cairo_t *cr)
 {
 	MbBookPreview *preview;
 	MbPreviewWidgetPrivate *priv;
+	GdkPixbuf *cover;
 	gchar *genres;
 	gchar *authors;
 	gchar *sequences;
@@ -152,32 +153,31 @@ mb_preview_widget_draw (GtkWidget *widget, cairo_t *cr)
 	if (priv->preview)
 	{
 		preview = priv->preview;
+		authors = mb_book_preview_get_authors_as_string (preview);
 
 		if (preview->cover)
 		{
-			GdkPixbuf *cover;
-			
 			cover = SCALE_COVER (preview->cover, DEFAULT_COVER_WIDTH);
-
-			if (cover)
-			{
-				gdk_cairo_set_source_pixbuf (cr, cover, 0, 0);
-				cairo_paint (cr);
-				cairo_set_source_rgb (cr, 0.0, 0.0, 0.0);
-
-				top = top + (margin * 2) + gdk_pixbuf_get_height (cover);
-
-				g_object_unref (cover);
-			}
 		}
-
-		if (preview->title)
+		else
 		{
-			height = print_text (widget, cr, preview->title, top, TRUE, TRUE);
-			top = top + height;
+			cover = SCALE_COVER (BLANK_COVER (preview->title, authors),
+			                     DEFAULT_COVER_WIDTH);
+		}
+		
+		if (cover)
+		{
+			gdk_cairo_set_source_pixbuf (cr, cover, 0, 0);
+			cairo_paint (cr);
+			cairo_set_source_rgb (cr, 0.0, 0.0, 0.0);
+
+			top = top + (margin * 2) + gdk_pixbuf_get_height (cover);
+
+			g_object_unref (cover);
 		}
 
-		authors = mb_book_preview_get_authors_as_string (preview);
+		height = print_text (widget, cr, preview->title, top, TRUE, TRUE);
+		top = top + height;
 
 		if (authors)
 		{
@@ -330,6 +330,11 @@ print_text (GtkWidget *widget, cairo_t *cr, gchar *text, gint top,
 	PangoFontDescription *font;
 	gint layout_height;
 	gint font_size;
+
+	if (!text)
+	{
+		return 0;
+	}
 
 	layout = pango_cairo_create_layout (cr);
 	context = gtk_widget_get_style_context (widget);

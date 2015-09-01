@@ -20,6 +20,7 @@
 #include "../types/mb-types.h"
 
 #define SCALE_COVER(pix,w)			(mb_book_preview_scale_cover (pix, w))
+#define BLANK_COVER(t,a)			(mb_book_preview_get_blank_cover (t, a))
 
 MbBookPreview *mb_book_preview_new_from_file (const gchar *filename,
                                               gboolean full_data);
@@ -32,5 +33,7 @@ gchar *mb_book_preview_get_authors_as_string (MbBookPreview *preview);
 gchar *mb_book_preview_get_sequences_as_string (MbBookPreview *preview);
 
 GdkPixbuf *mb_book_preview_scale_cover (GdkPixbuf *scr_image, gint dest_width);
+
+GdkPixbuf *mb_book_preview_get_blank_cover (gchar *title, gchar *author);
 
 void mb_book_preview_free (MbBookPreview *preview);

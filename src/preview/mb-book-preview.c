@@ -17,6 +17,8 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <gtk/gtk.h>
+
 #include <libxml/parser.h>
 #include "mb-book-preview.h"
 
@@ -27,6 +29,9 @@
 #define EQUALS(name,str)			((gboolean) (!xmlStrcmp ((name), (const xmlChar *) (str))))
 #define ATTRS_LEN(obj)				(g_strv_length ((gchar **) obj))
 #define NAME_EQUALS(str)			(EQUALS (name, str))
+
+#define BLANK_COVER_WIDTH			240
+#define BLANK_COVER_HEIGHT			360
 
 typedef enum _ParserState ParserState;
 typedef struct _BookParserState BookParserState;
@@ -79,6 +84,9 @@ struct _BookParserState
 	GString *image_marker_name;
 	GString *image_body;
 };
+
+static void print_cover_text (cairo_t *cr, gchar *text, gint max_width,
+                              gint max_height, gboolean top);
 
 static gboolean parse_file (const char *filename, MbBookPreview *data,
                             gboolean full_data);
@@ -360,6 +368,113 @@ mb_book_preview_scale_cover (GdkPixbuf *scr_image, gint dest_width)
 	                                      (int) dest_height, GDK_INTERP_HYPER);
 
 	return dest_image;	
+}
+
+GdkPixbuf *
+mb_book_preview_get_blank_cover (gchar *title, gchar *author)
+{
+	GdkPixbuf *cover;
+	cairo_surface_t *surface;
+	cairo_t *cr;
+	gint border_margin;
+
+	surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32,
+	                                      BLANK_COVER_WIDTH,
+	                                      BLANK_COVER_HEIGHT);
+	
+	cr = cairo_create (surface);
+	border_margin = 4;
+
+	cairo_set_source_rgb (cr, 0.62, 0.13, 0.19);
+	cairo_rectangle (cr, 0, 0, BLANK_COVER_WIDTH, BLANK_COVER_HEIGHT);
+	cairo_fill (cr);
+
+	print_cover_text (cr, title, BLANK_COVER_WIDTH, BLANK_COVER_HEIGHT, TRUE);
+	print_cover_text (cr, author, BLANK_COVER_WIDTH, BLANK_COVER_HEIGHT, FALSE);
+
+	cairo_set_source_rgb (cr, 1.0, 1.0, 1.0);
+	cairo_move_to (cr, border_margin, border_margin);
+	cairo_line_to (cr, BLANK_COVER_WIDTH - border_margin, border_margin);
+	cairo_line_to (cr, BLANK_COVER_WIDTH - border_margin,
+	               BLANK_COVER_HEIGHT - border_margin);
+
+	cairo_line_to (cr, border_margin, BLANK_COVER_HEIGHT - border_margin);
+	cairo_line_to (cr, border_margin, border_margin);
+
+	cairo_set_line_cap (cr, CAIRO_LINE_CAP_SQUARE);
+	cairo_set_line_width (cr, 2.0);
+	cairo_stroke (cr);
+	
+	cover = gdk_pixbuf_get_from_surface (surface, 0, 0, BLANK_COVER_WIDTH,
+	                                     BLANK_COVER_HEIGHT);
+
+	cairo_surface_destroy (surface);
+	cairo_destroy (cr);
+	
+	return cover;
+}
+
+static void
+print_cover_text (cairo_t *cr, gchar *text, gint max_width, gint max_height,
+                  gboolean top)
+{
+	PangoLayout *layout;
+	PangoFontDescription *font;
+	gint padding;
+	gint margin;
+	gint height;
+
+	if (!text)
+	{
+		return;
+	}
+
+	padding = 16;
+	margin = 10;
+	layout = pango_cairo_create_layout (cr);
+
+	if (top)
+	{
+		font = pango_font_description_from_string ("Arial 18");
+
+		pango_font_description_set_weight (font, PANGO_WEIGHT_HEAVY);
+		pango_font_description_set_stretch (font, PANGO_STRETCH_EXTRA_EXPANDED);
+
+		pango_layout_set_height (layout, 260);
+	}
+	else
+	{
+		font = pango_font_description_from_string ("Arial 14");
+
+		pango_font_description_set_weight (font, PANGO_WEIGHT_BOOK);
+		pango_font_description_set_stretch (font, PANGO_STRETCH_NORMAL);
+	}
+	
+	pango_layout_set_font_description (layout, font);
+	pango_layout_set_alignment (layout, PANGO_ALIGN_CENTER);
+	pango_layout_set_wrap (layout, PANGO_WRAP_WORD_CHAR);
+	pango_layout_set_justify (layout, FALSE);
+	pango_layout_set_width (layout, (max_width - (padding * 2)) * PANGO_SCALE);
+	pango_layout_set_text (layout, text, -1);
+
+	if (top)
+	{
+		cairo_move_to (cr, (double) padding, (double) (padding * 2) + margin);
+	}
+	else
+	{
+		pango_layout_get_size (layout, NULL, &height);
+		height = height / PANGO_SCALE;
+
+		cairo_move_to (cr, (double) padding,
+			           (double) max_height - (height + padding + margin));
+	}
+	
+	cairo_set_source_rgb (cr, 1.0, 1.0, 1.0);
+	pango_cairo_show_layout (cr, layout);
+
+	pango_font_description_free (font);
+	g_object_unref (layout);
 }
 
 static gboolean
