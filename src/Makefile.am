@@ -58,7 +58,9 @@ mbreader_SOURCES =  \
 	epub/mb-epub-loader.c \
 	epub/mb-epub-loader.h \
 	fb2/mb-fb2-loader.c \
-	fb2/mb-fb2-loader.h
+	fb2/mb-fb2-loader.h \
+	library/mb-library-view.c \
+	library/mb-library-view.h
 
 mbreader_LDFLAGS = 
 

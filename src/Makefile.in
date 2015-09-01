@@ -103,7 +103,7 @@ am_mbreader_OBJECTS = mb-application.$(OBJEXT) \
 	mb-fb2-parser-characters.$(OBJEXT) \
 	mb-fb2-parser-end-element.$(OBJEXT) \
 	mb-fb2-parser-start-element.$(OBJEXT) mb-epub-loader.$(OBJEXT) \
-	mb-fb2-loader.$(OBJEXT)
+	mb-fb2-loader.$(OBJEXT) mb-library-view.$(OBJEXT)
 mbreader_OBJECTS = $(am_mbreader_OBJECTS)
 am__DEPENDENCIES_1 =
 mbreader_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -377,7 +377,9 @@ mbreader_SOURCES = \
 	epub/mb-epub-loader.c \
 	epub/mb-epub-loader.h \
 	fb2/mb-fb2-loader.c \
-	fb2/mb-fb2-loader.h
+	fb2/mb-fb2-loader.h \
+	library/mb-library-view.c \
+	library/mb-library-view.h
 
 mbreader_LDFLAGS = 
 mbreader_LDADD = $(MBREADER_LIBS)
@@ -488,6 +490,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mb-fb2-parser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mb-file-system.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mb-file.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mb-library-view.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mb-library.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mb-loader.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mb-preview-widget.Po@am__quote@
@@ -700,6 +703,20 @@ mb-fb2-loader.obj: fb2/mb-fb2-loader.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='fb2/mb-fb2-loader.c' object='mb-fb2-loader.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mb-fb2-loader.obj `if test -f 'fb2/mb-fb2-loader.c'; then $(CYGPATH_W) 'fb2/mb-fb2-loader.c'; else $(CYGPATH_W) '$(srcdir)/fb2/mb-fb2-loader.c'; fi`
+
+mb-library-view.o: library/mb-library-view.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mb-library-view.o -MD -MP -MF $(DEPDIR)/mb-library-view.Tpo -c -o mb-library-view.o `test -f 'library/mb-library-view.c' || echo '$(srcdir)/'`library/mb-library-view.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mb-library-view.Tpo $(DEPDIR)/mb-library-view.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='library/mb-library-view.c' object='mb-library-view.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mb-library-view.o `test -f 'library/mb-library-view.c' || echo '$(srcdir)/'`library/mb-library-view.c
+
+mb-library-view.obj: library/mb-library-view.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT mb-library-view.obj -MD -MP -MF $(DEPDIR)/mb-library-view.Tpo -c -o mb-library-view.obj `if test -f 'library/mb-library-view.c'; then $(CYGPATH_W) 'library/mb-library-view.c'; else $(CYGPATH_W) '$(srcdir)/library/mb-library-view.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/mb-library-view.Tpo $(DEPDIR)/mb-library-view.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='library/mb-library-view.c' object='mb-library-view.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o mb-library-view.obj `if test -f 'library/mb-library-view.c'; then $(CYGPATH_W) 'library/mb-library-view.c'; else $(CYGPATH_W) '$(srcdir)/library/mb-library-view.c'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo
