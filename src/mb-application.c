@@ -417,6 +417,25 @@ menu_open_callback (GSimpleAction *action, GVariant *parameter, gpointer data)
 static void
 menu_about_callback (GSimpleAction *action, GVariant *parameter, gpointer data)
 {
+	GtkWindow *window;
+
+	gchar *authors[] = {"Yan Zlobin <yan_zlobin@agniyoga.ru>", NULL};
+	gchar *artists[] = {"Jakub Szypulka (Poland)", NULL};
+
+	window = gtk_application_get_active_window (GTK_APPLICATION (data));
+
+	gtk_show_about_dialog (window,
+	                       "authors", authors,
+	                       "artists", artists,
+	                       "copyright", "Copyright © 2015 Yan Zlobin",
+	                       "logo-icon-name", "mbreader",
+	                       "program-name", "Magic Book Reader",
+	                       "comments", "Программа для чтения электронных книг",
+	                       "version", "0.6",
+	                       "license-type", GTK_LICENSE_GPL_3_0,
+	                       "website", "http://www.magicbook-project.org/",
+	                       "website-label", "www.magicbook-project.org",
+	                       NULL);
 }
 
 static void

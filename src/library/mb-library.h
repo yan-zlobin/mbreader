@@ -58,6 +58,8 @@ MbLibrary *mb_library_new (MbReference *reference);
 
 void mb_library_start (MbLibrary *library);
 
+void mb_library_open (MbLibrary *library);
+
 void mb_library_append_file (MbLibrary *library, gchar *filename);
 
 void mb_library_append_file_list (MbLibrary *library, GList *file_list);

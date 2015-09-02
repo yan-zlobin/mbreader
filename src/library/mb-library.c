@@ -19,6 +19,7 @@
 
 #include "mb-library.h"
 #include "mb-storage.h"
+#include "mb-library-window.h"
 
 #define COPY(obj,str)	   (g_string_chunk_insert (obj->priv->chunk, str))
 
@@ -29,6 +30,8 @@ struct _MbLibraryPrivate
 {
 	MbReference *reference;
 	MbStorage *storage;
+
+	MbLibraryWindow *window;
 
 	gboolean started;
 };
@@ -56,6 +59,7 @@ mb_library_init (MbLibrary *library)
 	library->priv = priv;
 
 	priv->started = FALSE;
+	priv->window = NULL;
 }
 
 static void
@@ -87,6 +91,11 @@ mb_library_finalize (GObject *object)
 	priv = library->priv;
 
 	g_object_unref (priv->storage);
+
+	if (priv->window)
+	{
+		g_object_unref (priv->window);
+	}
 	
 	G_OBJECT_CLASS (mb_library_parent_class)->finalize (object);
 }
@@ -122,6 +131,16 @@ mb_library_start (MbLibrary *library)
 
 		priv->started = TRUE;
 	}
+}
+
+void
+mb_library_open (MbLibrary *library)
+{
+	/*
+	MbLibraryPrivate *priv;
+
+	priv = library->priv;
+	*/
 }
 
 void
